@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Chronto",
+  "version": "1.0.0",
+  "permissions": ["tabs", "activeTab", "storage"],
+  "content_scripts": [
+    {
+      "js": ["contentscript.js"],
+      "css": ["contentscript.css"],
+      "matches": ["https://toastmasters.csod.com/Analytics/ShowReportHierarchy.aspx*"],
+      "all_frames": true
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "run_at": "document_end",
+    "persistent": false
+  },
+  "web_accessible_resources": ["assets/*"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
