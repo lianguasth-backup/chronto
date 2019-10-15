@@ -1,9 +1,5 @@
 import * as moment from 'moment';
 
-const report = document.getElementsByClassName("TableReportPrint")[0];
-console.log("report is: ")
-console.log(report)
-
 const FULL_NAME = "User Full Name";
 const USER_ID = "Count User ID";
 const PATHWAY_NAME = "Path the project is associated with";
@@ -43,17 +39,21 @@ const getHeader = (table) => {
 
 const getRowDict = (row, header) => {
     const rowDict = {}
-    for(var i = 0, cell; cell = row[0].cell; i++) {
-        rowDict[header[i]] = cell[i].textContent;
+    for(var i = 0, cell; cell = row.cells[i]; i++) {
+        rowDict[header[i]] = cell.textContent;
     }
     return rowDict
+}
+
+const isEmptyString = (text: string | null | undefined) => {
+    return (text || "").trim() === ""
 }
 
 const processProgress = (rowDicts) => {
     const toastmasters: IToastmasterProgress = {};
     for(let rowDict of rowDicts) {
         // ignore illegal users
-        if(!rowDict[USER_ID] || !rowDict[FULL_NAME]) {
+        if(isEmptyString(rowDict[USER_ID]) || isEmptyString(rowDict[FULL_NAME])) {
             continue;
         }
         // init user if first appears
@@ -90,7 +90,6 @@ const processProgress = (rowDicts) => {
 }
 
 const getProgressOnLevel = (levelReportTable) => {
-    console.log(levelReportTable.rows);
     const header = getHeader(levelReportTable)
     const rowDicts = [];
     // 
@@ -102,6 +101,71 @@ const getProgressOnLevel = (levelReportTable) => {
     return processProgress(rowDicts);
 }
 
+const getLevel = (levelTable) => {
+    // hacky way of getting the level char
+    const strLength = 7;
+    return levelTable.rows[0].cells[1].textContent.substring(0, strLength);
+}
+
+const getIndividualProgress = (individualProgress, completed: boolean) => {
+    let text = "";
+    text += "*Name: " + individualProgress.name + "*\n";
+    text += "- Pathway: \n";
+    for(let pathwayName in individualProgress.pathways) {
+        const pw = individualProgress.pathways[pathwayName];
+        let completedMark = "";
+        if(completed) {
+            completedMark = "[completed] :white_check_mark: ";
+        }
+        text += "\t\t * " + completedMark + " pathway name: " + pw.name
+            + " required completed/total: " + pw.cntCompleted 
+            + "/" + pw.cntTotal + "\n";
+    }
+    return text;
+}
+
+const isLevelCompleted = (individualProgress) => {
+    for(let pathwayName in individualProgress.pathways) {
+        const pw = individualProgress.pathways[pathwayName];
+        if (pw.cntCompleted < pw.cntTotal) {
+            return false;
+        }
+    }
+    return true;
+}
+
+const printLevelProgress = (level, progress) => {
+    let levelProgress = "========== Level: " + level + "================\n";
+    levelProgress += "Now let's check each individual progress: \n";
+    
+    const completed = [];
+    const incompleted = [];
+    for(let tm in progress) {
+        const p = progress[tm];
+        if(isLevelCompleted(p)) {
+            completed.push(p);
+        } else {
+            incompleted.push(p);
+        }
+    }
+
+    for(let p of incompleted) {
+        levelProgress += getIndividualProgress(p, false);
+    }
+
+    for(let p of completed) {
+        levelProgress += getIndividualProgress(p, true);
+    }
+
+    console.log(levelProgress);
+}
+
+const summary = document.getElementsByClassName("TableReportPrintCriteria")[0];
+const report = document.getElementsByClassName("TableReportPrint")[0];
+console.log("report is: ")
+console.log(report)
+const level = getLevel(summary);
 const progressOnLevel = getProgressOnLevel(report);
-console.log("get level");
+console.log("get level", level);
 console.log(progressOnLevel);
+printLevelProgress(level, progressOnLevel);
