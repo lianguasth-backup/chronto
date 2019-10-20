@@ -1,6 +1,6 @@
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { optimize } = require('webpack');
+const { optimize, ProvidePlugin } = require('webpack');
 const { join } = require('path');
 let prodPlugins = [];
 if (process.env.NODE_ENV === 'production') {
@@ -13,8 +13,9 @@ module.exports = {
   mode: process.env.NODE_ENV,
   devtool: 'inline-source-map',
   entry: {
-    contentscript: [join(__dirname, 'src/contentscript/contentscript.ts'), join(__dirname, 'src/contentscript/contentscript.scss')],
+    level_report: [join(__dirname, 'src/contentscript/level_report.ts'), join(__dirname, 'src/contentscript/level_report.scss')],
     background: join(__dirname, 'src/background/background.ts'),
+    progress_dashboard: join(__dirname, 'src/contentscript/progress_dashboard.ts'),
   },
   output: {
     path: join(__dirname, 'dist'),
@@ -40,6 +41,11 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
+    new ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+     })
   ],
   resolve: {
     extensions: ['.ts', '.js'],

@@ -5,9 +5,14 @@
   "permissions": ["tabs", "activeTab", "storage"],
   "content_scripts": [
     {
-      "js": ["contentscript.js"],
-      "css": ["contentscript.css"],
+      "js": ["level_report.js"],
+      "css": ["level_report.css"],
       "matches": ["https://toastmasters.csod.com/Analytics/ShowReportHierarchy.aspx*"],
+      "all_frames": true
+    },
+    {
+      "js": ["progress_dashboard.js"],
+      "matches": ["https://toastmasters.csod.com/Dashboard/Main.aspx?tab_page_id=-303*"],
       "all_frames": true
     }
   ],
