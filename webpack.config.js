@@ -46,7 +46,7 @@ module.exports = {
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
      }),
-    new EnvironmentPlugin(['NODE_ENV', 'SLACK_TOKEN']),
+    new EnvironmentPlugin(['NODE_ENV', 'SLACK_TOKEN',  'CHANNEL_ID']),
   ],
   resolve: {
     extensions: ['.ts', '.js'],

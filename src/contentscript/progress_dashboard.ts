@@ -1,5 +1,32 @@
-var header = document.getElementsByClassName("dashboard-widget-header")[0];
-var title = document.getElementsByClassName("dashboard-widget-title")[0];
+var headers = document.getElementsByClassName("dashboard-widget-header");
+
+for (var i = 0; i < headers.length; i++) {
+    const header = headers[i];
+    setTimeout(function() {
+        generateReport(header);
+    }, 10000 * i);
+}
+
+function generateReport(header) {
+    const func = headerEventListenerFunc(header)
+    header.addEventListener('mouseover', func);
+
+    var title = header.getElementsByClassName("dashboard-widget-title")[0];
+    // trigger dropdown generation
+    eventFire(title, 'mouseover');
+
+    // delay execution
+    setTimeout(function () {
+        eventFire(header, 'mouseover');
+        header.removeEventListener("mouseover", func);
+    },  500);
+}
+
+function headerEventListenerFunc(header) {
+    return function() {
+        triggerDropdown(header);
+    }
+}
 
 function triggerDropdown(header) {
     var dropdown = header.getElementsByClassName("dropdown-toggle");
@@ -17,10 +44,6 @@ function triggerDropdown(header) {
     }
 }
 
-header.addEventListener('mouseover', function() {
-    triggerDropdown(header);
-});
-
 function eventFire(el, etype){
     console.log("fired")
     if (el.fireEvent) {
@@ -31,11 +54,3 @@ function eventFire(el, etype){
         el.dispatchEvent(evObj);
     }
 }
-
-// trigger dropdown generation
-eventFire(title, 'mouseover');
-
-// delay execution
-setTimeout(function () {
-    eventFire(header, 'mouseover');
-},  500);

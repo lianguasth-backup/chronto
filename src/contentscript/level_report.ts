@@ -7,7 +7,7 @@ const PATHWAY_NAME = "Path the project is associated with";
 const PROJECT_TYPE = "Project Type";
 const REQUIRED = "Required";
 const TRANSCRIPT_STATUS = "Transcript Status";
-const SLACK_CHANNEL = "GMHHVSL5D";
+const SLACK_CHANNEL = process.env.CHANNEL_ID;
 
 export interface IToastmasterProgress {
     [id: string]: Toastmaster
@@ -138,7 +138,7 @@ const isLevelCompleted = (individualProgress) => {
 
 const printLevelProgress = (level, progress) => {
     let levelProgress = "========== Level: " + level + "================\n";
-    levelProgress += "Now let's check each individual progress: \n";
+    levelProgress += "Individual progress: \n";
     
     const completed = [];
     const incompleted = [];
