@@ -1,6 +1,6 @@
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { optimize, ProvidePlugin } = require('webpack');
+const { optimize, ProvidePlugin, EnvironmentPlugin } = require('webpack');
 const { join } = require('path');
 let prodPlugins = [];
 if (process.env.NODE_ENV === 'production') {
@@ -45,7 +45,8 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
-     })
+     }),
+    new EnvironmentPlugin(['NODE_ENV', 'SLACK_TOKEN']),
   ],
   resolve: {
     extensions: ['.ts', '.js'],
