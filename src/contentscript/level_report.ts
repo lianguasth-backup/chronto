@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { sendSlackNotification } from './slack'
 
 const FULL_NAME = "User Full Name";
 const USER_ID = "Count User ID";
@@ -6,6 +7,7 @@ const PATHWAY_NAME = "Path the project is associated with";
 const PROJECT_TYPE = "Project Type";
 const REQUIRED = "Required";
 const TRANSCRIPT_STATUS = "Transcript Status";
+const SLACK_CHANNEL = process.env.CHANNEL_ID;
 
 export interface IToastmasterProgress {
     [id: string]: Toastmaster
@@ -136,7 +138,7 @@ const isLevelCompleted = (individualProgress) => {
 
 const printLevelProgress = (level, progress) => {
     let levelProgress = "========== Level: " + level + "================\n";
-    levelProgress += "Now let's check each individual progress: \n";
+    levelProgress += "Individual progress: \n";
     
     const completed = [];
     const incompleted = [];
@@ -157,7 +159,7 @@ const printLevelProgress = (level, progress) => {
         levelProgress += getIndividualProgress(p, true);
     }
 
-    console.log(levelProgress);
+    sendSlackNotification(levelProgress, SLACK_CHANNEL)
 }
 
 const summary = document.getElementsByClassName("TableReportPrintCriteria")[0];
